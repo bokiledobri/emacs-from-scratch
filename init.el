@@ -2,23 +2,23 @@
 ;;       in Emacs and init.el will be generated automatically!
 
 ;; You will most likely need to adjust this font size for your system!
-(defvar efs/default-font-size 120)
-(defvar efs/default-variable-font-size 120)
+(defvar og/default-font-size 120)
+(defvar og/default-variable-font-size 120)
 
 ;; Make frame transparency overridable
-(defvar efs/frame-transparency '(90 . 90))
+(defvar og/frame-transparency '(90 . 90))
 
 ;; The default is 800 kilobytes.  Measured in bytes.
 (setq gc-cons-threshold (* 50 1000 1000))
 
-(defun efs/display-startup-time ()
+(defun og/display-startup-time ()
   (message "Emacs loaded in %s with %d garbage collections."
            (format "%.2f seconds"
                    (float-time
                      (time-subtract after-init-time before-init-time)))
            gcs-done))
 
-(add-hook 'emacs-startup-hook #'efs/display-startup-time)
+(add-hook 'emacs-startup-hook #'og/display-startup-time)
 
 ;; Initialize package sources
   (require 'package)
@@ -78,8 +78,8 @@
 (global-display-line-numbers-mode t)
 
 ;; Set frame transparency
-(set-frame-parameter (selected-frame) 'alpha efs/frame-transparency)
-(add-to-list 'default-frame-alist `(alpha . ,efs/frame-transparency))
+(set-frame-parameter (selected-frame) 'alpha og/frame-transparency)
+(add-to-list 'default-frame-alist `(alpha . ,og/frame-transparency))
 (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
@@ -91,17 +91,17 @@
                 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-(set-face-attribute 'default nil :font "NotoSansMono" :height efs/default-font-size)
+(set-face-attribute 'default nil :font "NotoSansMono" :height og/default-font-size)
 
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "NotoSansMono" :height efs/default-font-size)
+(set-face-attribute 'fixed-pitch nil :font "NotoSansMono" :height og/default-font-size)
 
 ;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "ComicMono" :height efs/default-variable-font-size :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "ComicMono" :height og/default-variable-font-size :weight 'regular)
 
 ;; Make ESC quit prompts
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-  (defun efs/open-config-org ()
+  (defun og/open-config-org ()
    "Opens ~/.emacs.default/Emacs.org"
    (interactive)
    (message "Entering OG config")
@@ -109,19 +109,19 @@
   (use-package general
     :after evil
     :config
-    (general-create-definer efs/leader-keys
+    (general-create-definer og/leader-keys
       :keymaps '(normal insert visual emacs)
       :prefix "SPC"
       :global-prefix "C-SPC")
 
-    (efs/leader-keys
+    (og/leader-keys
       "t"  '(:ignore t :which-key "toggles")
       "tt" '(counsel-load-theme :which-key "choose theme")
       "o"  '(:ignore t :which-key "open")
       "ot" '(projectile-run-vterm :which-key "vterm")
       "oe" '(eshell :which-key "eshell")
       "oi" '(ielm :which-key "ielm")
-      "og" '(efs/open-config-org :which-key "Emacs.org")
+      "og" '(og/open-config-org :which-key "Emacs.org")
       "od" '(projectile-dired :which-key "dired")
       "m"  '(:ignore t :which-key "LSP")
       "mf" '(lsp-format-buffer :which-key "format buffer")
@@ -232,7 +232,7 @@
     ("k" text-scale-decrease "out")
     ("f" nil "finished" :exit t))
 
-(efs/leader-keys
+(og/leader-keys
     "ts" '(hydra-text-scale/body :which-key "scale text"))
 
 (defhydra hydra-window-scale (:timeout 4)
@@ -242,10 +242,10 @@
   ("l" evil-window-increase-width "increase width")
   ("k" evil-window-increase-height "increase height")
   ("f" nil "finished" :exit t))
-(efs/leader-keys
+(og/leader-keys
   "tw" '(hydra-window-scale/body :which-key "scale window"))
 
-(defun efs/org-font-setup ()
+(defun og/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
@@ -275,7 +275,7 @@
   (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
   (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
 
-(defun efs/org-mode-setup ()
+(defun og/org-mode-setup ()
   (org-indent-mode)
   (variable-pitch-mode 1)
   (visual-line-mode 1))
@@ -283,7 +283,7 @@
 (use-package org
   :pin org
   :commands (org-capture org-agenda)
-  :hook (org-mode . efs/org-mode-setup)
+  :hook (org-mode . og/org-mode-setup)
   :config
   (setq org-ellipsis " ▾")
 
@@ -400,20 +400,20 @@
   (define-key global-map (kbd "C-c j")
     (lambda () (interactive) (org-capture nil "jj")))
 
-  (efs/org-font-setup))
+  (og/org-font-setup))
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
   :custom
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
-(defun efs/org-mode-visual-fill ()
+(defun og/org-mode-visual-fill ()
   (setq visual-fill-column-width 125
         visual-fill-column-center-text t)
   (visual-fill-column-mode 1))
 
 (use-package visual-fill-column
-  :hook (org-mode . efs/org-mode-visual-fill))
+  :hook (org-mode . og/org-mode-visual-fill))
 
 (require 'ob-elixir)
     (with-eval-after-load 'org
@@ -437,22 +437,22 @@
   (add-to-list 'org-structure-template-alist '("py" . "src python")))
 
 ;; Automatically tangle our Emacs.org config file when we save it
-(defun efs/org-babel-tangle-config ()
+(defun og/org-babel-tangle-config ()
   (when (string-equal (file-name-directory (buffer-file-name))
                       (expand-file-name user-emacs-directory))
     ;; Dynamic scoping to the rescue
     (let ((org-confirm-babel-evaluate nil))
       (org-babel-tangle))))
 
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'og/org-babel-tangle-config)))
 
-(defun efs/lsp-mode-setup ()
+(defun og/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
   (lsp-headerline-breadcrumb-mode))
 
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
-  :hook (lsp-mode . efs/lsp-mode-setup)
+  :hook (lsp-mode . og/lsp-mode-setup)
   :init
   (setq lsp-keymap-prefix "C-l")  ;; Or 'C-l', 's-l'
   :config
@@ -585,7 +585,7 @@
   (setq explicit-shell-file-name "powershell.exe")
   (setq explicit-powershell.exe-args '()))
 
-(defun efs/configure-eshell ()
+(defun og/configure-eshell ()
   ;; Save command history when commands are entered
   (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
 
@@ -606,7 +606,7 @@
   :after eshell)
 
 (use-package eshell
-  :hook (eshell-first-time-mode . efs/configure-eshell)
+  :hook (eshell-first-time-mode . og/configure-eshell)
   :config
 
   (with-eval-after-load 'esh-opt
